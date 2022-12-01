@@ -3,13 +3,13 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.loginandregistration.databinding.ActivityRegistrationBinding
 
 
-class MainActivity : AppCompatActivity() {
+class RegistrationActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityRegistrationBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        ActivityRegistrationBinding.inflate(layoutInflater)
+        binding = ActivityRegistrationBinding.inflate(layoutInflater)
         setContentView(binding.root)
     }
 }
