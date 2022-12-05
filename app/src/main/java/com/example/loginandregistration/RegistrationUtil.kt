@@ -46,5 +46,32 @@ class RegistrationUtil {
         return (passwordsMatch && passwordContainsNumber && passwordContainsCapitalLetter && passwordLongerThanOrEqualTo8Letters)
     }
 
+
+
+        public fun validateEmail(email: String): Boolean{
+
+            var containsPrefix: Boolean = false
+            var containsDomain: Boolean = false
+
+            if(email.length > 0) {
+                if(email.substring(0, 1) != "@") {containsPrefix = true}
+                else {return false}
+            }
+            else {return false}
+
+
+            var pastAt: Boolean = false
+            var pastPeriod = false
+            for(i in email.indices) {
+
+                if(email.substring(i, i+1) == "@") {pastAt = true}
+                if(pastAt && email.substring(i, i+1) == "@") {return false}
+
+
+
+            }
+
+        }
+
 }
 }
