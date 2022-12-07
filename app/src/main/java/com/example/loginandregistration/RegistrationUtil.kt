@@ -53,6 +53,8 @@ class RegistrationUtil {
             var containsPrefix: Boolean = false
             var containsDomain: Boolean = false
 
+
+
             if(email.length > 0) {
                 if(email.substring(0, 1) != "@") {containsPrefix = true}
                 else {return false}
@@ -61,16 +63,36 @@ class RegistrationUtil {
 
 
             var pastAt: Boolean = false
-            var pastPeriod = false
+            var pastPeriod: Boolean = false
             for(i in email.indices) {
 
-                if(email.substring(i, i+1) == "@") {pastAt = true}
                 if(pastAt && email.substring(i, i+1) == "@") {return false}
+                if(email.substring(i, i+1) == "." && pastPeriod) {return false}
+                if(email.substring(i, i+1) == "." && !pastAt) {return false}
+
+                if(email.substring(i, i+1) == "." && pastAt) {pastPeriod = true}
+
+
+                if(email.substring(i, i+1) == "@") {pastAt = true}
+
+
+                if(pastAt && !pastPeriod && email.substring(i, i+1) != "@" && email.substring(i, i+1) != ".") {containsDomain = true}
 
 
 
             }
 
+
+            return containsPrefix && containsDomain
+
+        }
+
+        public fun validateUsername(username: String): Boolean {
+            if(!(username.length >= 3)) {return false}
+
+            if(username.lowercase() == "already taken") {return false}
+
+            return true
         }
 
 }

@@ -49,6 +49,66 @@ class RegistrationUtilTest {
         assertThat(actual).isTrue()
     }
 
+    @Test
+    fun validateEmail_startsWithAnAt_isFalse() {
+        val actual = RegistrationUtil.validateEmail("@gmail.com")
+        assertThat(actual).isFalse()
+    }
+
+    @Test
+    fun validateEmail_noAt_isFalse() {
+        val actual = RegistrationUtil.validateEmail("emailgmail.com")
+        assertThat(actual).isFalse()
+    }
+
+    @Test
+    fun validateEmail_noPeriod_isFalse() {
+        val actual = RegistrationUtil.validateEmail("email@gmailcom")
+        assertThat(actual).isFalse()
+    }
+
+    @Test
+    fun validateEmail_empty_isFalse() {
+        val actual = RegistrationUtil.validateEmail("")
+        assertThat(actual).isFalse()
+    }
+
+    @Test
+    fun validateEmail_noDomain_isFalse() {
+        val actual = RegistrationUtil.validateEmail("email@.com")
+        assertThat(actual).isFalse()
+    }
+
+    @Test
+    fun validateEmail_goodEmail_isTrue() {
+        val actual = RegistrationUtil.validateEmail("email@gmail.com")
+        assertThat(actual).isTrue()
+    }
+
+    @Test
+    fun validateUsername_empty_isFalse() {
+        val actual = RegistrationUtil.validateUsername("")
+        assertThat(actual).isFalse()
+    }
+
+    @Test
+    fun validateUsername_tooShort_isFalse() {
+        val actual = RegistrationUtil.validateUsername("yo")
+        assertThat(actual).isFalse()
+    }
+
+    @Test
+    fun validateUsername_isAlreadyTaken_isFalse() {
+        val actual = RegistrationUtil.validateUsername("Already taken")
+        assertThat(actual).isFalse()
+    }
+
+    @Test
+    fun validateUsername_goodUsername_isTrue() {
+        val actual = RegistrationUtil.validateUsername("theusernameever")
+        assertThat(actual).isTrue()
+    }
+
 
 
     // Make the tests for the other functions in the Util class with
