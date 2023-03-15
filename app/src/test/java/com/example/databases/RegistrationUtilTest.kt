@@ -1,4 +1,4 @@
-package com.example.loginandregistration
+package com.example.databases
 
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
@@ -39,7 +39,7 @@ class RegistrationUtilTest {
 
     @Test
     fun validatePassword_noCapitalLetter_isFalse() {
-        val actual = RegistrationUtil.validatePassword("thepasswordever1", "thepasswordever2")
+        val actual = RegistrationUtil.validatePassword("thepasswordever1", "thepasswordever1")
         assertThat(actual).isFalse()
     }
 

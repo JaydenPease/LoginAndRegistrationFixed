@@ -1,4 +1,4 @@
-package com.example.loginandregistration
+package com.example.databases
 
 //create the code to validate that all the sign up information is entered in the correct format here
 
@@ -13,6 +13,8 @@ class RegistrationUtil {
         var passwordContainsCapitalLetter: Boolean = false
         var passwordLongerThanOrEqualTo8Letters: Boolean = false
 
+        var isANumber: Boolean = false
+
         //test if passwords match
         if (password == confirmPassword) {
             passwordsMatch = true
@@ -25,9 +27,21 @@ class RegistrationUtil {
 
         //test if password contains a capital letter
         for(i in password.indices) {
-            if (password.substring(i, i + 1) == password.substring(i, i + 1).uppercase()) {
-                passwordContainsCapitalLetter = true
-                break
+            if (password.substring(i, i + 1).equals(password.substring(i, i + 1).uppercase(), ignoreCase = false)) {
+                for(j in 0..9) {
+                    if(j.toString() == password.substring(i, i+1)) {
+                        isANumber = true
+                        break
+                    }
+                }
+                if(!isANumber) {
+                    passwordContainsCapitalLetter = true
+                    break
+                }
+                else {
+                    isANumber = false
+                }
+
             }
         }
 
@@ -43,7 +57,7 @@ class RegistrationUtil {
 
 
 
-        return (passwordsMatch && passwordContainsNumber && passwordContainsCapitalLetter && passwordLongerThanOrEqualTo8Letters)
+        return ((passwordsMatch && passwordContainsNumber) && (passwordContainsCapitalLetter && passwordLongerThanOrEqualTo8Letters))
     }
 
 
