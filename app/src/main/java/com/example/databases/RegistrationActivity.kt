@@ -44,6 +44,7 @@ class RegistrationActivity : AppCompatActivity() {
 
                 val user = BackendlessUser()
                 user.setProperty("email", binding.editTextRegistrationEmail.text.toString())
+                user.setProperty("name", binding.editTextRegistrationName.text.toString())
                 user.setProperty("username", binding.editTextRegistrationUsername.text.toString())
                 user.password = binding.editTextPasswordRegistrationPassword.text.toString()
 
@@ -51,6 +52,7 @@ class RegistrationActivity : AppCompatActivity() {
                     override fun handleResponse(registeredUser: BackendlessUser?) {
                         // user has been registered and now can login
                         Log.d(TAG, "handleResponse: ${user}")
+                        launchMainActivity()
                     }
 
                     override fun handleFault(fault: BackendlessFault) {

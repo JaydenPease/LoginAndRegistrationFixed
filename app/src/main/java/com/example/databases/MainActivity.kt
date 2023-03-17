@@ -57,6 +57,7 @@ class MainActivity : AppCompatActivity() {
                     override fun handleResponse(user: BackendlessUser?) {
                         // user has been logged in
                         Log.d(TAG, "handleResponse: ${user?.getProperty("username")} has logged in")
+                        retriveAllData()
                     }
 
                     override fun handleFault(fault: BackendlessFault) {
@@ -68,6 +69,19 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun retriveAllData() {
+        Backendless.Data.of(Loan::class.java).find(object : AsyncCallback<List<Loan?>?> {
+            override fun handleResponse(foundLoans: List<Loan?>?) {
+                // all Contact instances have been found
+                Log.d(TAG, "handleResponse: $foundLoans")
+            }
+
+            override fun handleFault(fault: BackendlessFault) {
+                // an error has occurred, the error code can be retrieved with fault.getCode()
+                Log.d(TAG, "handleFault: ${fault.message}")
+            }
+        })
+    }
 
 
     private fun launchRegistrationActivity() {
