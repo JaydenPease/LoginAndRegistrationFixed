@@ -9,7 +9,9 @@ data class Loan(
     var dateOfLoan: Date = Date(0),
     var amountRepaid: Double = 0.0,
     var dateOfFullRepayment: Date? = null,
-    var fullyRepaid: Boolean = false
+    var fullyRepaid: Boolean = false,
+    var ownerId: String = "",
+    var objectId: String = ""
 ) {
     fun amountNotRepaid() : Double {
         return loanAmount - amountRepaid

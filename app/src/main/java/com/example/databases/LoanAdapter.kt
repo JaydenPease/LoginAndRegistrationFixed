@@ -49,7 +49,7 @@ class LoanAdapter(var dataSet: List<Loan>) :
 
         // Get element from your dataset at this position and replace the
         // contents of the view with that element
-        val loan = dataSet[position]
+        val loan = dataSet?.get(position)
 //        viewHolder.textViewName.text = hero.name
 //        viewHolder.textViewDescription.text = hero.description
 //        viewHolder.textViewRanking.text = hero.ranking.toString()

@@ -19,6 +19,7 @@ import com.backendless.BackendlessUser
 import com.backendless.async.callback.AsyncCallback
 import com.backendless.exceptions.BackendlessFault
 import com.example.databases.databinding.ActivityMainBinding
+import com.example.heroeslistactivity.LoanListActivity
 
 
 class MainActivity : AppCompatActivity() {
@@ -29,6 +30,7 @@ class MainActivity : AppCompatActivity() {
     companion object {
         public final var EXTRA_USERNAME: String = "com.example.loginandregistration.MainActivity.USERNAME"
         public final var EXTRA_PASSWORD: String = "com.example.loginandregistration.MainActivity.PASSWORD"
+        public final var EXTRA_USERID: String = "com.example.loginandregistration.MainActivity.USER"
 
         public final var TAG: String = "MainActivity"
     }
@@ -57,7 +59,10 @@ class MainActivity : AppCompatActivity() {
                     override fun handleResponse(user: BackendlessUser?) {
                         // user has been logged in
                         Log.d(TAG, "handleResponse: ${user?.getProperty("username")} has logged in")
-                        retriveAllData()
+                        val userId = user!!.objectId
+
+                        launchLoanListActivity(userId)
+
                     }
 
                     override fun handleFault(fault: BackendlessFault) {
@@ -69,19 +74,22 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun retriveAllData() {
-        Backendless.Data.of(Loan::class.java).find(object : AsyncCallback<List<Loan?>?> {
-            override fun handleResponse(foundLoans: List<Loan?>?) {
-                // all Contact instances have been found
-                Log.d(TAG, "handleResponse: $foundLoans")
-            }
-
-            override fun handleFault(fault: BackendlessFault) {
-                // an error has occurred, the error code can be retrieved with fault.getCode()
-                Log.d(TAG, "handleFault: ${fault.message}")
-            }
-        })
-    }
+//    private fun retrieveAllData(userId: String) {
+//        val whereClause: String = "ownerId = '$userId'"
+//        val queryBuilder = DataQueryBuilder.create()
+//        queryBuilder.whereClause = whereClause
+//        Backendless.Data.of(Loan::class.java).find(queryBuilder, object : AsyncCallback<List<Loan?>?> {
+//            override fun handleResponse(foundLoans: List<Loan?>?) {
+//                // all Contact instances have been found
+//                Log.d(TAG, "handleResponse: $foundLoans")
+//            }
+//
+//            override fun handleFault(fault: BackendlessFault) {
+//                // an error has occurred, the error code can be retrieved with fault.getCode()
+//                Log.d(TAG, "handleFault: ${fault.message}")
+//            }
+//        })
+//    }
 
 
     private fun launchRegistrationActivity() {
@@ -92,5 +100,13 @@ class MainActivity : AppCompatActivity() {
         registrationIntent.putExtra(EXTRA_PASSWORD, binding.editTextPasswordMainPassword.text)
 
         startActivity(registrationIntent)
+    }
+
+    private fun launchLoanListActivity(userId: String) {
+
+        val loanListIntent: Intent = Intent(this, LoanListActivity::class.java)
+
+        loanListIntent.putExtra(EXTRA_USERID, userId)
+
     }
 }

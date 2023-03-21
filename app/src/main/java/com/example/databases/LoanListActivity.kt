@@ -3,32 +3,64 @@ package com.example.heroeslistactivity
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
-import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.backendless.Backendless
+import com.backendless.async.callback.AsyncCallback
+import com.backendless.exceptions.BackendlessFault
+import com.backendless.persistence.DataQueryBuilder
 import com.example.databases.Loan
-import com.example.databases.R
+import com.example.databases.MainActivity
 import com.example.databases.databinding.ActivityLoanListBinding
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 
 class LoanListActivity : AppCompatActivity() {
 
     companion object {
-        val TAG:String = "HeroesListActivity"
+        val TAG: String = "HeroesListActivity"
     }
 
     private lateinit var binding: ActivityLoanListBinding
     lateinit var adapter: LoanAdapter
+
+    var loans: List<Loan?>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLoanListBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        loadHeroesFromJSON()
+        val userId = intent.getStringExtra(MainActivity.EXTRA_USERID)
+
+
+
+    }
+
+    private fun retrieveAllData(userId: String) {
+
+
+        val whereClause: String = "ownerId = '$userId'"
+        val queryBuilder = DataQueryBuilder.create()
+        queryBuilder.whereClause = whereClause
+        Backendless.Data.of(Loan::class.java).find(queryBuilder, object : AsyncCallback<List<Loan?>?> {
+            override fun handleResponse(foundLoans: List<Loan?>?) {
+                // all Contact instances have been found
+                Log.d(MainActivity.TAG, "handleResponse: $foundLoans")
+                loans = foundLoans
+
+            }
+
+            override fun handleFault(fault: BackendlessFault) {
+                // an error has occurred, the error code can be retrieved with fault.getCode()
+                Log.d(MainActivity.TAG, "handleFault: ${fault.message}")
+            }
+        })
+
+        if (loans != null) {
+        adapter = LoanAdapter(loans as List<Loan>)
+        }
+
+        binding.recyclerViewLoanList.adapter = adapter
+
+        binding.recyclerViewLoanList.layoutManager = LinearLayoutManager(this)
     }
 
 //    override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -67,33 +99,7 @@ class LoanListActivity : AppCompatActivity() {
 //        }
 //    }
 
-    private fun loadHeroesFromJSON() {
-
-//        val inputStream = resources.openRawResource(R.raw.heroes)
-//
-//        val jsonString = inputStream.bufferedReader().use {
-//
-//            it.readText()
-//        }
-//        Log.d(TAG, "onCreate: $jsonString")
-
-
-
-
-        val gson = Gson()
-
-
-//        val type = object : TypeToken<List<Loan>>() { }.type
-//        val loans = gson.fromJson<MutableList<Loan>>(jsonString, type)
-
-
-//        adapter = LoanAdapter(loans)
-
-        binding.recyclerViewLoanList.adapter = adapter
-
-        binding.recyclerViewLoanList.layoutManager = LinearLayoutManager(this)
-    }
-
 }
+
 
 
