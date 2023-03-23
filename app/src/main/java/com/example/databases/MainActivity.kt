@@ -19,7 +19,7 @@ import com.backendless.BackendlessUser
 import com.backendless.async.callback.AsyncCallback
 import com.backendless.exceptions.BackendlessFault
 import com.example.databases.databinding.ActivityMainBinding
-import com.example.heroeslistactivity.LoanListActivity
+import com.example.databases.LoanListActivity
 
 
 class MainActivity : AppCompatActivity() {
@@ -72,6 +72,8 @@ class MainActivity : AppCompatActivity() {
                 })
 
         }
+
+
     }
 
 //    private fun retrieveAllData(userId: String) {
@@ -107,6 +109,9 @@ class MainActivity : AppCompatActivity() {
         val loanListIntent: Intent = Intent(this, LoanListActivity::class.java)
 
         loanListIntent.putExtra(EXTRA_USERID, userId)
+
+        startActivity(loanListIntent)
+        finish()
 
     }
 }

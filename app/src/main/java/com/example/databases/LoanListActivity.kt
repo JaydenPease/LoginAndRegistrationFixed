@@ -1,4 +1,4 @@
-package com.example.heroeslistactivity
+package com.example.databases
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -8,9 +8,9 @@ import com.backendless.Backendless
 import com.backendless.async.callback.AsyncCallback
 import com.backendless.exceptions.BackendlessFault
 import com.backendless.persistence.DataQueryBuilder
-import com.example.databases.Loan
-import com.example.databases.MainActivity
 import com.example.databases.databinding.ActivityLoanListBinding
+import kotlin.collections.List as List
+
 
 class LoanListActivity : AppCompatActivity() {
 
@@ -30,7 +30,9 @@ class LoanListActivity : AppCompatActivity() {
 
         val userId = intent.getStringExtra(MainActivity.EXTRA_USERID)
 
-
+        if (userId != null) {
+            retrieveAllData(userId)
+        }
 
     }
 
@@ -46,6 +48,12 @@ class LoanListActivity : AppCompatActivity() {
                 Log.d(MainActivity.TAG, "handleResponse: $foundLoans")
                 loans = foundLoans
 
+                if (loans != null) {
+                    adapter = LoanAdapter(loans as List<Loan>)
+
+                    startRecyclerView()
+                }
+
             }
 
             override fun handleFault(fault: BackendlessFault) {
@@ -54,14 +62,20 @@ class LoanListActivity : AppCompatActivity() {
             }
         })
 
-        if (loans != null) {
-        adapter = LoanAdapter(loans as List<Loan>)
-        }
+
+
+
+    }
+
+    private fun startRecyclerView() {
 
         binding.recyclerViewLoanList.adapter = adapter
 
         binding.recyclerViewLoanList.layoutManager = LinearLayoutManager(this)
+
     }
+
+
 
 //    override fun onCreateOptionsMenu(menu: Menu): Boolean {
 //        val inflater: MenuInflater = menuInflater
