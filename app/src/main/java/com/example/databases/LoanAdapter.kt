@@ -1,5 +1,6 @@
 package com.example.databases
 
+import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -12,9 +13,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.backendless.Backendless
 import com.backendless.async.callback.AsyncCallback
 import com.backendless.exceptions.BackendlessFault
+import com.example.databases.LoanDetailActivity
 
 
-class LoanAdapter(var dataSet: List<Loan>) :
+
+class LoanAdapter(var dataSet: MutableList<Loan>) :
     RecyclerView.Adapter<LoanAdapter.ViewHolder>() {
 
 
@@ -78,11 +81,11 @@ class LoanAdapter(var dataSet: List<Loan>) :
             Toast.makeText(it.context, "${loan.name} has been clicked", Toast.LENGTH_SHORT).show()
 
             //make the Intent to open the new activity
-//            val detailIntent = Intent(it.context, HeroesDetailsActivity::class.java)
-//            detailIntent.putExtra(HeroesDetailsActivity.EXTRA_HERO, hero)
-//
-//            //launch the activity
-//            it.context.startActivity(detailIntent)
+            val detailIntent = Intent(it.context, LoanDetailActivity::class.java)
+            detailIntent.putExtra(LoanDetailActivity.EXTRA_LOAN, loan)
+
+            //launch the activity
+            it.context.startActivity(detailIntent)
         }
 
     }
@@ -93,13 +96,17 @@ class LoanAdapter(var dataSet: List<Loan>) :
         Backendless.Data.of(Loan::class.java).remove(dataSet[position],
             object : AsyncCallback<Long?> {
                 override fun handleResponse(response: Long?) {
-                    // Contact has been deleted. The response is the
+                    // Loan has been deleted. The response is the
                     // time in milliseconds when the object was deleted
+                    dataSet.removeAt(position)
+                    notifyDataSetChanged()
+                    Log.d("Adapter", "thing deleted")
                 }
 
                 override fun handleFault(fault: BackendlessFault) {
                     // an error has occurred, the error code can be
                     // retrieved with fault.getCode()
+                    Log.d("Adapter", fault.message)
                 }
             })
 

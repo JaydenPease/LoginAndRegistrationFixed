@@ -42,27 +42,26 @@ class LoanListActivity : AppCompatActivity() {
         val whereClause: String = "ownerId = '$userId'"
         val queryBuilder = DataQueryBuilder.create()
         queryBuilder.whereClause = whereClause
-        Backendless.Data.of(Loan::class.java).find(queryBuilder, object : AsyncCallback<List<Loan?>?> {
-            override fun handleResponse(foundLoans: List<Loan?>?) {
-                // all Contact instances have been found
-                Log.d(MainActivity.TAG, "handleResponse: $foundLoans")
-                loans = foundLoans
+        Backendless.Data.of(Loan::class.java)
+            .find(queryBuilder, object : AsyncCallback<List<Loan?>?> {
+                override fun handleResponse(foundLoans: List<Loan?>?) {
+                    // all Contact instances have been found
+                    Log.d(MainActivity.TAG, "handleResponse: $foundLoans")
+                    loans = foundLoans
 
-                if (loans != null) {
-                    adapter = LoanAdapter(loans as List<Loan>)
+                    if (loans != null && containsNoNulls(loans)) {
+                        adapter = LoanAdapter(loans as MutableList<Loan>)
 
-                    startRecyclerView()
+                        startRecyclerView()
+                    }
+
                 }
 
-            }
-
-            override fun handleFault(fault: BackendlessFault) {
-                // an error has occurred, the error code can be retrieved with fault.getCode()
-                Log.d(MainActivity.TAG, "handleFault: ${fault.message}")
-            }
-        })
-
-
+                override fun handleFault(fault: BackendlessFault) {
+                    // an error has occurred, the error code can be retrieved with fault.getCode()
+                    Log.d(MainActivity.TAG, "handleFault: ${fault.message}")
+                }
+            })
 
 
     }
@@ -74,6 +73,21 @@ class LoanListActivity : AppCompatActivity() {
         binding.recyclerViewLoanList.layoutManager = LinearLayoutManager(this)
 
     }
+
+    public fun containsNoNulls(list: List<Loan?>?): Boolean {
+        if (list != null) {
+            for (i in list.indices) {
+                if (list[i] == null) {
+                    return false
+                }
+            }
+            return true
+        }
+
+        return false
+    }
+}
+
 
 
 
@@ -113,7 +127,7 @@ class LoanListActivity : AppCompatActivity() {
 //        }
 //    }
 
-}
+
 
 
 
