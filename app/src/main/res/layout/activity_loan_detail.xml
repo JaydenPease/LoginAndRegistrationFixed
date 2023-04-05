@@ -38,7 +38,7 @@
         android:enabled="false"
         android:focusable="true"
         android:hint="Initial Loan"
-        android:inputType="none"
+        android:inputType="number"
         android:minHeight="48dp"
         app:layout_constraintBottom_toTopOf="@+id/editText_loanDetail_amountRepaid"
         app:layout_constraintEnd_toEndOf="parent"
@@ -55,7 +55,7 @@
         android:enabled="false"
         android:focusable="true"
         android:hint="Amount Repaid"
-        android:inputType="none"
+        android:inputType="number"
         android:minHeight="48dp"
         app:layout_constraintBottom_toTopOf="@+id/textView_loanDetail_amountStillOwed"
         app:layout_constraintEnd_toEndOf="parent"
@@ -112,5 +112,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editText_loanDetail_amountRepaid"
         tools:text="Calculated Amount Still Owed" />
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

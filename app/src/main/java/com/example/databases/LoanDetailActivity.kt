@@ -12,8 +12,6 @@ import androidx.appcompat.app.AppCompatActivity
 import com.backendless.Backendless
 import com.backendless.async.callback.AsyncCallback
 import com.backendless.exceptions.BackendlessFault
-import com.example.databases.Loan
-import com.example.databases.R
 import com.example.databases.databinding.ActivityLoanDetailBinding
 import java.util.*
 
@@ -39,6 +37,23 @@ class LoanDetailActivity : AppCompatActivity() {
         binding.editTextLoanDetailBorrower.setText(loan.name)
         binding.editTextLoanDetailAmountRepaid.setText(loan.amountRepaid.toString())
         binding.textViewLoanDetailAmountStillOwed.text = String.format("Still Owed %.2f", loan.loanAmount - loan.amountRepaid)
+
+        binding.buttonLoanDetailSave.setOnClickListener {
+            loan.name = binding.editTextLoanDetailBorrower.text.toString()
+            loan.loanAmount = binding.editTextLoanDetailInitialLoan.text as Double
+            loan.amountRepaid = binding.editTextLoanDetailAmountRepaid.text as Double
+
+            Backendless.Data.of("Loan").save(loan, object : AsyncCallback<Map<*, *>?> {
+                override fun handleResponse(response: Map<*, *>?) {
+                    // Contact object has been updated
+                }
+
+                override fun handleFault(fault: BackendlessFault) {
+                    // an error has occurred, the error code can be retrieved with fault.getCode()
+                }
+            })
+
+        }
 
     }
 
@@ -74,7 +89,7 @@ class LoanDetailActivity : AppCompatActivity() {
                 }
 
                 override fun handleFault(fault: BackendlessFault) {
-                    Log.d("BirthdayDetail", "handleFault: ${fault.message}")
+                    Log.d("LoanDetail", "handleFault: ${fault.message}")
                 }
             })
     }
@@ -100,9 +115,9 @@ class LoanDetailActivity : AppCompatActivity() {
             binding.checkBoxLoanDetailIsFullyRepaid.isEnabled = true
             binding.editTextLoanDetailBorrower.inputType = InputType.TYPE_TEXT_VARIATION_PERSON_NAME
             binding.editTextLoanDetailBorrower.isEnabled = true
-            binding.editTextLoanDetailAmountRepaid.inputType = InputType.TYPE_NUMBER_VARIATION_NORMAL
+            binding.editTextLoanDetailAmountRepaid.inputType = InputType.TYPE_CLASS_NUMBER
             binding.editTextLoanDetailAmountRepaid.isEnabled = true
-            binding.editTextLoanDetailInitialLoan.inputType = InputType.TYPE_NUMBER_VARIATION_NORMAL
+            binding.editTextLoanDetailInitialLoan.inputType = InputType.TYPE_CLASS_NUMBER
             binding.editTextLoanDetailInitialLoan.isEnabled = true
             binding.checkBoxLoanDetailIsFullyRepaid.isClickable = true
         }
