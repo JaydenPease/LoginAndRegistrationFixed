@@ -13,8 +13,8 @@ data class Loan(
     var amountRepaid: Double = 0.0,
     var dateOfFullRepayment: Date? = null,
     var fullyRepaid: Boolean = false,
-    var ownerId: String = "",
-    var objectId: String = ""
+    var ownerId: String? = null,
+    var objectId: String? = null
 ) : Parcelable {
     fun amountNotRepaid() : Double {
         return loanAmount - amountRepaid

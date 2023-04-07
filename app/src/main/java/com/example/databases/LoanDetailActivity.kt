@@ -23,7 +23,10 @@ class LoanDetailActivity : AppCompatActivity() {
     lateinit var loan : Loan
 
     companion object {
+        val TAG: String = "LoanDetailActivity"
+
         val EXTRA_LOAN = "loan"
+
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,27 +34,50 @@ class LoanDetailActivity : AppCompatActivity() {
         binding = ActivityLoanDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        loan = intent.getParcelableExtra<Loan>(EXTRA_LOAN) ?: Loan()
-        binding.checkBoxLoanDetailIsFullyRepaid.isChecked = loan.fullyRepaid
-        binding.editTextLoanDetailInitialLoan.setText(loan.loanAmount.toString())
-        binding.editTextLoanDetailBorrower.setText(loan.name)
-        binding.editTextLoanDetailAmountRepaid.setText(loan.amountRepaid.toString())
-        binding.textViewLoanDetailAmountStillOwed.text = String.format("Still Owed %.2f", loan.loanAmount - loan.amountRepaid)
+        val passedLoan = intent.getParcelableExtra<Loan>(EXTRA_LOAN)
+        if(passedLoan == null) {
+            loan = Loan()
+            toggleEditable()
+        } else {
+            loan = passedLoan
+
+            binding.checkBoxLoanDetailIsFullyRepaid.isChecked = loan.fullyRepaid
+            binding.editTextLoanDetailInitialLoan.setText(loan.loanAmount.toString())
+            binding.editTextLoanDetailBorrower.setText(loan.name)
+            binding.editTextLoanDetailAmountRepaid.setText(loan.amountRepaid.toString())
+            binding.textViewLoanDetailAmountStillOwed.text = String.format("Still Owed %.2f", loan.loanAmount - loan.amountRepaid)
+        }
+
+
 
         binding.buttonLoanDetailSave.setOnClickListener {
+
+            //save loan: decide if the loan is a new one and save new or update existing
+            if(loan.ownerId.isNullOrBlank()) {
+                loan.ownerId = intent.getStringExtra(MainActivity.EXTRA_USERID)!!
+            }
+            // get the values from all the fields and update the loan object
             loan.name = binding.editTextLoanDetailBorrower.text.toString()
-            loan.loanAmount = binding.editTextLoanDetailInitialLoan.text as Double
-            loan.amountRepaid = binding.editTextLoanDetailAmountRepaid.text as Double
+            loan.loanAmount = binding.editTextLoanDetailInitialLoan.text.toString().toDouble()
+            loan.amountRepaid = binding.editTextLoanDetailAmountRepaid.text.toString().toDouble()
 
-            Backendless.Data.of("Loan").save(loan, object : AsyncCallback<Map<*, *>?> {
-                override fun handleResponse(response: Map<*, *>?) {
-                    // Contact object has been updated
-                }
+            // make the backendless call to save the object
 
-                override fun handleFault(fault: BackendlessFault) {
-                    // an error has occurred, the error code can be retrieved with fault.getCode()
-                }
-            })
+
+            Backendless.Data.of(Loan::class.java)
+                .save(loan, object : AsyncCallback<Loan?> {
+                    override fun handleResponse(response: Loan?) {
+                        Toast.makeText(this@LoanDetailActivity, "Loan saved", Toast.LENGTH_SHORT).show()
+                    }
+
+                    override fun handleFault(fault: BackendlessFault) {
+                        // an error has occurred, the error code can be retrieved with fault.getCode()
+                        Log.d(TAG, fault.message)
+                    }
+                })
+
+            toggleEditable()
+
 
         }
 
@@ -89,7 +115,7 @@ class LoanDetailActivity : AppCompatActivity() {
                 }
 
                 override fun handleFault(fault: BackendlessFault) {
-                    Log.d("LoanDetail", "handleFault: ${fault.message}")
+                    Log.d(TAG, "handleFault: ${fault.message}")
                 }
             })
     }

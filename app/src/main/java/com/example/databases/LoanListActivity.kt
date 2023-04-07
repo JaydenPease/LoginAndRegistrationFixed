@@ -1,5 +1,6 @@
 package com.example.databases
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -19,7 +20,7 @@ class LoanListActivity : AppCompatActivity() {
     }
 
     private lateinit var binding: ActivityLoanListBinding
-    lateinit var adapter: LoanAdapter
+    var adapter: LoanAdapter? = null
 
     var loans: List<Loan?>? = null
 
@@ -34,6 +35,22 @@ class LoanListActivity : AppCompatActivity() {
             retrieveAllData(userId)
         }
 
+        binding.fabLoanListCreateNewLoan.setOnClickListener {
+            val loanDetailIntent: Intent = Intent(this, LoanDetailActivity::class.java).apply {
+                putExtra(MainActivity.EXTRA_USERID, userId)
+            }
+            startActivity(loanDetailIntent)
+
+        }
+
+    }
+
+    override fun onRestart() {
+        super.onRestart()
+        val userId = intent.getStringExtra(MainActivity.EXTRA_USERID)
+        if (userId != null) {
+            retrieveAllData(userId)
+        }
     }
 
     private fun retrieveAllData(userId: String) {
@@ -53,6 +70,9 @@ class LoanListActivity : AppCompatActivity() {
                         adapter = LoanAdapter(loans as MutableList<Loan>)
 
                         startRecyclerView()
+                    }
+                    else {
+                        Log.d(TAG, "loans list was null")
                     }
 
                 }

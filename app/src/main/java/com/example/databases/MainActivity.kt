@@ -102,6 +102,7 @@ class MainActivity : AppCompatActivity() {
         registrationIntent.putExtra(EXTRA_PASSWORD, binding.editTextPasswordMainPassword.text)
 
         startActivity(registrationIntent)
+
     }
 
     private fun launchLoanListActivity(userId: String) {

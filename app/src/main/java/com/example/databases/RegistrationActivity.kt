@@ -82,6 +82,7 @@ class RegistrationActivity : AppCompatActivity() {
         mainActivityIntent.putExtra(EXTRA_PASSWORD, binding.editTextPasswordRegistrationPassword.text)
 
         startActivity(mainActivityIntent)
+        finish()
 
 
     }
