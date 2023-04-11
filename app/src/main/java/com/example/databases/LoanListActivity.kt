@@ -10,6 +10,7 @@ import com.backendless.async.callback.AsyncCallback
 import com.backendless.exceptions.BackendlessFault
 import com.backendless.persistence.DataQueryBuilder
 import com.example.databases.databinding.ActivityLoanListBinding
+import java.util.*
 import kotlin.collections.List as List
 
 
@@ -21,19 +22,19 @@ class LoanListActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityLoanListBinding
     var adapter: LoanAdapter? = null
-
+    var cal = Calendar.getInstance()
     var loans: List<Loan?>? = null
+
+    private lateinit var userId: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLoanListBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val userId = intent.getStringExtra(MainActivity.EXTRA_USERID)
+        userId = intent.getStringExtra(MainActivity.EXTRA_USERID)!!
 
-        if (userId != null) {
-            retrieveAllData(userId)
-        }
+        retrieveAllData(userId)
 
         binding.fabLoanListCreateNewLoan.setOnClickListener {
             val loanDetailIntent: Intent = Intent(this, LoanDetailActivity::class.java).apply {
@@ -47,10 +48,8 @@ class LoanListActivity : AppCompatActivity() {
 
     override fun onRestart() {
         super.onRestart()
-        val userId = intent.getStringExtra(MainActivity.EXTRA_USERID)
-        if (userId != null) {
-            retrieveAllData(userId)
-        }
+        userId = intent.getStringExtra(MainActivity.EXTRA_USERID)!!
+        retrieveAllData(userId)
     }
 
     private fun retrieveAllData(userId: String) {
