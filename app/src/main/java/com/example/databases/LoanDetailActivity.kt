@@ -29,7 +29,7 @@ class LoanDetailActivity : AppCompatActivity() {
     var loanIsEditable = false
     var cal = Calendar.getInstance()
     lateinit var loan : Loan
-    var selectedDateTextView : TextView? = null
+//    var selectedDateTextView : TextView? = null
 
     companion object {
         val TAG: String = "LoanDetailActivity"
@@ -47,6 +47,8 @@ class LoanDetailActivity : AppCompatActivity() {
         val passedLoan = intent.getParcelableExtra<Loan>(EXTRA_LOAN)
         if(passedLoan == null) {
             loan = Loan()
+//            binding.textViewLoanDetailDateLoaned.text = "Date Loaned"
+//            binding.textViewLoanDetailDateRepaid.text = "Date Repaid"
             toggleEditable()
         } else {
             loan = passedLoan
@@ -56,51 +58,52 @@ class LoanDetailActivity : AppCompatActivity() {
             binding.editTextLoanDetailBorrower.setText(loan.name)
             binding.editTextLoanDetailAmountRepaid.setText(loan.amountRepaid.toString())
             binding.textViewLoanDetailAmountStillOwed.text = String.format("Still Owed %.2f", loan.loanAmount - loan.amountRepaid)
-            binding.textViewLoanDetailDateLoaned.text = loan.dateOfLoan.toString()
-            if(loan.dateOfFullRepayment != null) {
-                binding.textViewLoanDetailDateRepaid.text = loan.dateOfFullRepayment.toString()
-            }
-            else {
-                binding.textViewLoanDetailDateRepaid.text = "Date repaid (currently null)"
-            }
+            binding.checkBoxLoanDetailIsFullyRepaid.isClickable = false
+//            binding.textViewLoanDetailDateLoaned.text = loan.dateOfLoan.toString()
+//            if(loan.dateOfFullRepayment != null) {
+//                binding.textViewLoanDetailDateRepaid.text = loan.dateOfFullRepayment.toString()
+//            }
+//            else {
+//                binding.textViewLoanDetailDateRepaid.text = "Date repaid (currently null)"
+//            }
         }
 
-        val dateSetListener = object : DatePickerDialog.OnDateSetListener {
-            override fun onDateSet(view: DatePicker, year: Int, monthOfYear: Int,
-                                   dayOfMonth: Int) {
-                cal.set(Calendar.YEAR, year)
-                cal.set(Calendar.MONTH, monthOfYear)
-                cal.set(Calendar.DAY_OF_MONTH, dayOfMonth)
-                updateDateInView()
-            }
-        }
+//        val dateSetListener = object : DatePickerDialog.OnDateSetListener {
+//            override fun onDateSet(view: DatePicker, year: Int, monthOfYear: Int,
+//                                   dayOfMonth: Int) {
+//                cal.set(Calendar.YEAR, year)
+//                cal.set(Calendar.MONTH, monthOfYear)
+//                cal.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+//                updateDateInView()
+//            }
+//        }
 
-        binding.textViewLoanDetailDateLoaned.setOnClickListener(object : View.OnClickListener {
+//        binding.textViewLoanDetailDateLoaned.setOnClickListener(object : View.OnClickListener {
+//
+//            override fun onClick(view: View) {
+//                DatePickerDialog(this@LoanDetailActivity,
+//                    dateSetListener,
+//                    // set DatePickerDialog to point to today's date when it loads up
+//                    cal.get(Calendar.YEAR),
+//                    cal.get(Calendar.MONTH),
+//                    cal.get(Calendar.DAY_OF_MONTH)).show()
+//                selectedDateTextView = binding.textViewLoanDetailDateLoaned
+//            }
+//
+//        })
 
-            override fun onClick(view: View) {
-                DatePickerDialog(this@LoanDetailActivity,
-                    dateSetListener,
-                    // set DatePickerDialog to point to today's date when it loads up
-                    cal.get(Calendar.YEAR),
-                    cal.get(Calendar.MONTH),
-                    cal.get(Calendar.DAY_OF_MONTH)).show()
-                selectedDateTextView = binding.textViewLoanDetailDateLoaned
-            }
-
-        })
-
-        binding.textViewLoanDetailDateRepaid.setOnClickListener(object : View.OnClickListener {
-            override fun onClick(view: View) {
-                DatePickerDialog(this@LoanDetailActivity,
-                    dateSetListener,
-                    // set DatePickerDialog to point to today's date when it loads up
-                    cal.get(Calendar.YEAR),
-                    cal.get(Calendar.MONTH),
-                    cal.get(Calendar.DAY_OF_MONTH)).show()
-                selectedDateTextView = binding.textViewLoanDetailDateRepaid
-            }
-
-        })
+//        binding.textViewLoanDetailDateRepaid.setOnClickListener(object : View.OnClickListener {
+//            override fun onClick(view: View) {
+//                DatePickerDialog(this@LoanDetailActivity,
+//                    dateSetListener,
+//                    // set DatePickerDialog to point to today's date when it loads up
+//                    cal.get(Calendar.YEAR),
+//                    cal.get(Calendar.MONTH),
+//                    cal.get(Calendar.DAY_OF_MONTH)).show()
+//                selectedDateTextView = binding.textViewLoanDetailDateRepaid
+//            }
+//
+//        })
 
 
 
@@ -112,16 +115,23 @@ class LoanDetailActivity : AppCompatActivity() {
             }
             // get the values from all the fields and update the loan object
             loan.name = binding.editTextLoanDetailBorrower.text.toString()
-            loan.loanAmount = binding.editTextLoanDetailInitialLoan.text.toString().toDouble()
-            loan.amountRepaid = binding.editTextLoanDetailAmountRepaid.text.toString().toDouble()
-            val formatter = SimpleDateFormat("MM-dd-yyyy")
-            loan.dateOfLoan = formatter.parse(binding.textViewLoanDetailDateLoaned.text.toString())!!
-            if(binding.textViewLoanDetailDateRepaid.text.toString() != "Date repaid (currently null)") {
-                loan.dateOfFullRepayment = formatter.parse(binding.textViewLoanDetailDateRepaid.text.toString())!!
+            if(binding.editTextLoanDetailInitialLoan.text.toString().isNotBlank()) {
+                loan.loanAmount = binding.editTextLoanDetailInitialLoan.text.toString().toDouble()
             }
-            else {
-                loan.dateOfFullRepayment = null
+            if(binding.editTextLoanDetailAmountRepaid.text.toString().isNotBlank()) {
+                loan.amountRepaid = binding.editTextLoanDetailAmountRepaid.text.toString().toDouble()
             }
+            loan.fullyRepaid = binding.checkBoxLoanDetailIsFullyRepaid.isChecked
+//            val formatter = SimpleDateFormat("MM/dd/yyyy")
+//            if(!(binding.textViewLoanDetailDateLoaned.text.toString().isBlank() || binding.textViewLoanDetailDateLoaned.text.toString() == "Date Loaned")) {
+//                loan.dateOfLoan = formatter.parse(binding.textViewLoanDetailDateLoaned.text.toString())!!
+//            }
+//            if(binding.textViewLoanDetailDateRepaid.text.toString() != "Date repaid (currently null)" && binding.textViewLoanDetailDateRepaid.text.toString() != "Date Repaid") {
+//                loan.dateOfFullRepayment = formatter.parse(binding.textViewLoanDetailDateRepaid.text.toString())!!
+//            }
+//            else {
+//                loan.dateOfFullRepayment = null
+//            }
 
 
             // make the backendless call to save the object
@@ -212,9 +222,9 @@ class LoanDetailActivity : AppCompatActivity() {
         }
     }
 
-    private fun updateDateInView() {
-        val myFormat = "MM/dd/yyyy" // mention the format you need
-        val sdf = SimpleDateFormat(myFormat, Locale.US)
-        selectedDateTextView!!.text = sdf.format(cal.getTime())
-    }
+//    private fun updateDateInView() {
+//        val myFormat = "MM/dd/yyyy" // mention the format you need
+//        val sdf = SimpleDateFormat(myFormat, Locale.US)
+//        selectedDateTextView!!.text = sdf.format(cal.getTime())
+//    }
 }
